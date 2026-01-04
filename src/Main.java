@@ -1,10 +1,12 @@
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
 
-    static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "производство", "деревообработка", "фуникулёр"};
+    static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "фуникулёр", "симметрия"};
     static Scanner scanner = new Scanner(System.in);
     static Random random = new Random();
 
@@ -19,11 +21,12 @@ public class Main {
         String[] wordLetters = hiddenWord.split("");
         String[] wordCellsArray = wordCells.split("");
         int hangCounter = 0;
-//        System.out.println(Arrays.toString(wordCellsArray).replace(", ", "").replace("]", "").replace("[", ""));
-        while (hangCounter < Assets.hang.length) {
-            String inputLetter = inputLetter();
+        String wordLetterStatus;
+        boolean gameOver = false;
+        while (!gameOver) {
             boolean pass = false;
             boolean repeat = false;
+            String inputLetter = inputLetter();
             for (int i = 0; i < wordLetters.length; i++) {
                 if (inputLetter.equals(wordLetters[i])) {
                     wordCellsArray[i] = wordLetters[i];
@@ -36,23 +39,27 @@ public class Main {
             if (!pass) {
                 hangCounter += 1;
             }
+
             for (int i = 0; i < Assets.hang.length; i++) {
                 if (hangCounter == i + 1) {
                     System.out.print(Assets.hang[i]);
-                    if (repeat) {
-                        System.out.println("Буква [" + inputLetter + "] в слове есть");
-                    } else {
-                        System.out.println("Буквы [" + inputLetter + "] в слове нет:");
-                    }
-                    System.out.println("Количество ошибок: " + hangCounter);
                 }
             }
+            if (repeat) {
+                wordLetterStatus = "Буква [" + inputLetter + "] в слове есть.";
+            } else {
+                wordLetterStatus = "Буквы [" + inputLetter + "] в слове нет.";
+            }
+            System.out.println(wordLetterStatus + " Количество ошибок: " + hangCounter);
             System.out.println(Arrays.toString(wordCellsArray).replace(", ", "").replace("]", "").replace("[", ""));
             if (Arrays.equals(wordLetters, wordCellsArray)) {
-                System.out.println("Вы победили");
+                System.out.println("Вы отгадали слово");
+                hangCounter = 0;
                 init(words);
+                gameOver = true;
             } else if (hangCounter == Assets.hang.length) {
                 System.out.println("Вы проиграли, " + "загаданное слово было: " + hiddenWord);
+                gameOver = true;
                 init(words);
             }
         }
