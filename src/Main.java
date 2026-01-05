@@ -49,30 +49,36 @@ public class Main {
                     .distinct()
                     .toList();
 
-            for (int i = 0; i < Assets.hang.length; i++) {
-                if (hangCounter == i + 1) {
-                    System.out.print(Assets.hang[i]);
-                }
-            }
-
+            System.out.println(printHangman(hangCounter));
             inputLetterStatus = checkInputLetterStatus(repeat, inputLetterStatus, inputLetter);
-
             System.out.println(inputLetterStatus + " Количество ошибок [" + hangCounter + "]. Неверно угаданные буквы " + incorrectInputLettersWithoutDuplicates + ".");
             System.out.println(cellsForHiddenWordArrayStars);
+
             if (Arrays.equals(hiddenWordLetters, cellsForHiddenWordArray)) {
                 System.out.println("Вы отгадали слово");
                 hangCounter = 0;
                 gameInitilization(words);
                 gameOver = true;
             } else if (hangCounter == Assets.hang.length) {
-                System.out.println("Вы проиграли, " + "загаданное слово было: " + hiddenWord);
+                System.out.println("Вы не отгадали слово, " + "загаданное слово было: " + hiddenWord);
                 gameOver = true;
                 gameInitilization(words);
             }
+
         }
     }
-    
-    private static String checkInputLetterStatus (boolean repeat, String inputLetterStatus, String inputLetter) {
+
+    private static String printHangman(int hangCounter) {
+        String result = null;
+        for (int i = 0; i < Assets.hang.length; i++) {
+            if (hangCounter == i + 1) {
+                result = Assets.hang[i];
+            }
+        }
+        return result;
+    }
+
+    private static String checkInputLetterStatus(boolean repeat, String inputLetterStatus, String inputLetter) {
         if (repeat) {
             inputLetterStatus = "Буква [" + inputLetter + "] в слове есть.";
         } else {
