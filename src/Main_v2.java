@@ -7,6 +7,8 @@ public class Main_v2 {
     static Random random = new Random();
     static int hangmanCounter = 0;
 
+    static List<String> mistakesLetters = new ArrayList<>();
+
 
     public static void main(String[] args) {
 
@@ -45,15 +47,17 @@ public class Main_v2 {
     public static void gameLoop() {
         String hiddenWord = letHiddenWord(words);
         String hiddenWordCells = printHiddenWordCells(hiddenWord);
+        System.out.println(hiddenWordCells);
         while (!isGameOver() && !isPlayerWin(hiddenWord, hiddenWordCells)) {
             String enteredLetter = inputLetter();
             isEnteredLetterValid(enteredLetter);
-            isEnteredLetterInHiddenWord(enteredLetter, hiddenWord);
+            boolean enteredLetterInHiddenWord = isEnteredLetterInHiddenWord(enteredLetter, hiddenWord);
+            addMistakeLetterToListAndIncrementHangmanCounter(enteredLetterInHiddenWord, enteredLetter);
             String printedHiddenWordWithTrueLetter = printHiddenWordWithTrueLetter(hiddenWord, hiddenWordCells, enteredLetter);
             hiddenWordCells = printedHiddenWordWithTrueLetter;
             System.out.print(printHangmanStage());
             System.out.println(hiddenWordCells);
-            System.out.println("Количество ошибок [" + hangmanCounter + "].");
+            System.out.println("Количество ошибок [" + hangmanCounter + "]. " + "Неверные буквы " + mistakesLetters);
             System.out.println(isPlayerWin(hiddenWord, hiddenWordCells));
         }
     }
@@ -64,6 +68,8 @@ public class Main_v2 {
         String[] wordCellsArray = wordCells.split("");
         if (Arrays.equals(wordArray, wordCellsArray)) {
             result = true;
+            hangmanCounter = 0;
+            mistakesLetters.clear();
         }
         return result;
     }
@@ -72,18 +78,18 @@ public class Main_v2 {
         boolean result = false;
         if (hangmanCounter == Assets.hang.length) {
             result = true;
+            hangmanCounter = 0;
+            mistakesLetters.clear();
         }
         return result;
     }
 
-    private static List<String> addMistakeLetterToList(boolean isLetterinWord, String letter) {
-        List<String> mistakesLetters = new ArrayList<>();
-        if (!isLetterinWord) {
+    private static List<String> addMistakeLetterToListAndIncrementHangmanCounter(boolean isLetterInWord, String letter) {
+        if (!isLetterInWord && !mistakesLetters.contains(letter)) {
             mistakesLetters.add(letter);
+            hangmanCounter++;
         }
-        return mistakesLetters.stream()
-                .distinct()
-                .toList();
+        return mistakesLetters;
     }
 
     private static String printHiddenWordWithTrueLetter(String word, String wordCells, String letter) {
@@ -125,9 +131,6 @@ public class Main_v2 {
             if (Objects.equals(letter, wordArray[i])) {
                 result = true;
             }
-        }
-        if (!result) {
-            hangmanCounter++;
         }
         return result;
     }
