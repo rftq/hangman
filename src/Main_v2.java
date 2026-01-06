@@ -2,31 +2,14 @@
 import java.util.*;
 
 public class Main_v2 {
-    static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "фуникулёр", "симметрия"};
+    static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "фуникулёр", "симметрия", "адъютант"};
     static Scanner scanner = new Scanner(System.in);
     static Random random = new Random();
     static int hangmanCounter = 0;
-
     static List<String> mistakesLetters = new ArrayList<>();
 
-
     public static void main(String[] args) {
-
         gameInit();
-
-        // проверки:
-//        System.out.println(gameInitilization);
-//        System.out.println(hiddenWordCells);
-//        System.out.println(enteredLetter);
-//        System.out.println(hangmanStage);
-//        System.out.println("Введённая буква есть в слове? " + enteredLetterInHiddenWord);
-//        System.out.println("Введённые данные корректны?" + letterValid);
-//        System.out.println(printedHiddenWordWithTrueLetter);
-//        System.out.println(hangmanCounter);
-//        System.out.print(hangmanStage);
-//        System.out.println(mistakesLetters);
-//        System.out.println("Игра окончена?" + gameOver);
-//        System.out.println("Игрок отгадал слово?" + playerWin);
     }
 
     private static void gameInit() {
@@ -48,18 +31,26 @@ public class Main_v2 {
         String hiddenWord = letHiddenWord(words);
         String hiddenWordCells = printHiddenWordCells(hiddenWord);
         System.out.println(hiddenWordCells);
-        while (!isGameOver() && !isPlayerWin(hiddenWord, hiddenWordCells)) {
+        while (!isGameOver(hiddenWord) && !isPlayerWin(hiddenWord, hiddenWordCells)) {
             String enteredLetter = inputLetter();
-            isEnteredLetterValid(enteredLetter);
-            boolean enteredLetterInHiddenWord = isEnteredLetterInHiddenWord(enteredLetter, hiddenWord);
-            addMistakeLetterToListAndIncrementHangmanCounter(enteredLetterInHiddenWord, enteredLetter);
-            String printedHiddenWordWithTrueLetter = printHiddenWordWithTrueLetter(hiddenWord, hiddenWordCells, enteredLetter);
-            hiddenWordCells = printedHiddenWordWithTrueLetter;
-            System.out.print(printHangmanStage());
-            System.out.println(hiddenWordCells);
-            System.out.println("Количество ошибок [" + hangmanCounter + "]. " + "Неверные буквы " + mistakesLetters);
-            System.out.println(isPlayerWin(hiddenWord, hiddenWordCells));
+            if (isEnteredLetterValid(enteredLetter)) {
+                boolean enteredLetterInHiddenWord = isEnteredLetterInHiddenWord(enteredLetter, hiddenWord);
+                addMistakeLetterToListAndIncrementHangmanCounter(enteredLetterInHiddenWord, enteredLetter);
+                String printedHiddenWordWithTrueLetter = printHiddenWordWithTrueLetter(hiddenWord, hiddenWordCells, enteredLetter);
+                hiddenWordCells = printedHiddenWordWithTrueLetter;
+                System.out.print(printHangmanStage());
+                System.out.println(hiddenWordCells);
+                System.out.println("Количество ошибок [" + hangmanCounter + "]. " + "Неверные буквы " + mistakesLetters);
+                if (isPlayerWin(hiddenWord, hiddenWordCells)) {
+                    System.out.println("Вы отгадали слово");
+                }
+                if (isGameOver(hiddenWord)) {
+                    System.out.println("Вы проиграли, загаданное слово было: " + hiddenWord);
+                }
+            } else System.out.println("Некорректный ввод");
         }
+        hangmanCounter = 0;
+        mistakesLetters.clear();
     }
 
     private static boolean isPlayerWin(String word, String wordCells) {
@@ -68,28 +59,23 @@ public class Main_v2 {
         String[] wordCellsArray = wordCells.split("");
         if (Arrays.equals(wordArray, wordCellsArray)) {
             result = true;
-            hangmanCounter = 0;
-            mistakesLetters.clear();
         }
         return result;
     }
 
-    private static boolean isGameOver() {
+    private static boolean isGameOver(String word) {
         boolean result = false;
-        if (hangmanCounter == Assets.hang.length) {
+        if (hangmanCounter == Assets.hang.length || hangmanCounter >= word.length()) {
             result = true;
-            hangmanCounter = 0;
-            mistakesLetters.clear();
         }
         return result;
     }
 
-    private static List<String> addMistakeLetterToListAndIncrementHangmanCounter(boolean isLetterInWord, String letter) {
+    private static void addMistakeLetterToListAndIncrementHangmanCounter(boolean isLetterInWord, String letter) {
         if (!isLetterInWord && !mistakesLetters.contains(letter)) {
             mistakesLetters.add(letter);
             hangmanCounter++;
         }
-        return mistakesLetters;
     }
 
     private static String printHiddenWordWithTrueLetter(String word, String wordCells, String letter) {
@@ -107,7 +93,7 @@ public class Main_v2 {
         boolean result = false;
         char[] letterChar = letter.toCharArray();
         for (int i = 0; i < letterChar.length; i++) {
-            if (!Character.isDigit(letterChar[i]) && letter.length() < 2) {
+            if (!Character.isDigit(letterChar[i]) && letter.length() < 2 && letter.matches("^[а-яёА-ЯЁ]+$")) {
                 result = true;
             }
         }
