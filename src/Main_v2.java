@@ -10,7 +10,7 @@ public class Main_v2 {
 
     public static void main(String[] args) {
 
-        gameLoop();
+        gameInit();
 
         // проверки:
 //        System.out.println(gameInitilization);
@@ -27,8 +27,22 @@ public class Main_v2 {
 //        System.out.println("Игрок отгадал слово?" + playerWin);
     }
 
+    private static void gameInit() {
+        while (true) {
+            System.out.println("Начать новую игру? 1 - Да; 2 - Нет");
+            String startGame = scanner.next();
+            if (Objects.equals(startGame, "1")) {
+                System.out.println("Игра началась");
+                gameLoop();
+            } else if (Objects.equals(startGame, "2")) {
+                System.out.println("Вы вышли из игры");
+                break;
+            } else
+                System.out.println("Некорректный ввод");
+        }
+    }
+
     public static void gameLoop() {
-        gameInit();
         String hiddenWord = letHiddenWord(words);
         String hiddenWordCells = printHiddenWordCells(hiddenWord);
         while (!isGameOver() && !isPlayerWin(hiddenWord, hiddenWordCells)) {
@@ -135,18 +149,5 @@ public class Main_v2 {
         int i = random.nextInt(wordsArray.length);
         return wordsArray[i];
     }
-
-    private static String gameInit() {
-        String result = "";
-        System.out.println("Начать новую игру? 1 - Да; 2 - Нет");
-        String startGame = scanner.next();
-        if (Objects.equals(startGame, "1")) {
-            result = "Игра началась";
-        } else if (Objects.equals(startGame, "2")) {
-            result = "Вы вышли из игры";
-        } else result = "Некорректный ввод";
-        return result;
-    }
-
 
 }
