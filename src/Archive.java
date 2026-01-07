@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Main_v1 {
+public class Archive {
 
     static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "фуникулёр", "симметрия"};
     static Scanner scanner = new Scanner(System.in);

@@ -1,12 +1,12 @@
 
 import java.util.*;
 
-public class Main_v2 {
+public class Main {
     static String[] words = {"калейдоскоп", "прокрастинация", "перпендикуляр", "метеорит", "фуникулёр", "симметрия", "адъютант"};
     static Scanner scanner = new Scanner(System.in);
     static Random random = new Random();
     static int hangmanCounter = 0;
-    static List<String> mistakesLetters = new ArrayList<>();
+    static List<String> mistakeLetters = new ArrayList<>();
 
     public static void main(String[] args) {
         gameInit();
@@ -40,7 +40,7 @@ public class Main_v2 {
                 hiddenWordCells = printedHiddenWordWithTrueLetter;
                 System.out.print(printHangmanStage());
                 System.out.println(hiddenWordCells);
-                System.out.println("Количество ошибок [" + hangmanCounter + "]. " + "Неверные буквы " + mistakesLetters);
+                printHangCounterWithMistakeLetters();
                 if (isPlayerWin(hiddenWord, hiddenWordCells)) {
                     System.out.println("Вы отгадали слово");
                 }
@@ -50,50 +50,58 @@ public class Main_v2 {
             } else System.out.println("Некорректный ввод");
         }
         hangmanCounter = 0;
-        mistakesLetters.clear();
+        mistakeLetters.clear();
     }
 
-    private static boolean isPlayerWin(String word, String wordCells) {
+    private static boolean isPlayerWin(String hiddenWord, String hiddenWordCells) {
         boolean result = false;
-        String[] wordArray = word.split("");
-        String[] wordCellsArray = wordCells.split("");
+        String[] wordArray = hiddenWord.split("");
+        String[] wordCellsArray = hiddenWordCells.split("");
         if (Arrays.equals(wordArray, wordCellsArray)) {
             result = true;
         }
         return result;
     }
 
-    private static boolean isGameOver(String word) {
+    private static boolean isGameOver(String hiddenWord) {
         boolean result = false;
-        if (hangmanCounter == Assets.hang.length || hangmanCounter >= word.length()) {
+        if (hangmanCounter == Assets.hang.length || hangmanCounter >= hiddenWord.length()) {
             result = true;
         }
         return result;
     }
 
-    private static void addMistakeLetterToListAndIncrementHangmanCounter(boolean isLetterInWord, String letter) {
-        if (!isLetterInWord && !mistakesLetters.contains(letter)) {
-            mistakesLetters.add(letter);
+    private static void printHangCounterWithMistakeLetters() {
+        if (mistakeLetters.isEmpty()) {
+            System.out.println("Количество ошибок [" + hangmanCounter + "].");
+        } else {
+            System.out.println("Количество ошибок [" + hangmanCounter + "]. " + "Неверные буквы " + mistakeLetters);
+        }
+    }
+
+    private static void addMistakeLetterToListAndIncrementHangmanCounter(boolean enteredLetterInHiddenWord, String enteredLetter) {
+        if (!enteredLetterInHiddenWord && !mistakeLetters.contains(enteredLetter)) {
+            mistakeLetters.add(enteredLetter);
             hangmanCounter++;
         }
     }
 
-    private static String printHiddenWordWithTrueLetter(String word, String wordCells, String letter) {
-        String[] wordArray = word.split("");
-        String[] wordArrayCells = wordCells.split("");
+    private static String printHiddenWordWithTrueLetter(String hiddenWord, String hiddenWordCells, String enteredLetter) {
+        String[] wordArray = hiddenWord.split("");
+        String[] wordArrayCells = hiddenWordCells.split("");
         for (int i = 0; i < wordArray.length; i++) {
-            if (Objects.equals(letter, wordArray[i])) {
-                wordArrayCells[i] = letter;
+            if (Objects.equals(enteredLetter, wordArray[i])) {
+                wordArrayCells[i] = enteredLetter;
             }
         }
         return Arrays.toString(wordArrayCells).replace(", ", "").replace("]", "").replace("[", "");
     }
 
-    private static boolean isEnteredLetterValid(String letter) {
+    private static boolean isEnteredLetterValid(String enteredLetter) {
         boolean result = false;
-        char[] letterChar = letter.toCharArray();
+        char[] letterChar = enteredLetter.toCharArray();
         for (int i = 0; i < letterChar.length; i++) {
-            if (!Character.isDigit(letterChar[i]) && letter.length() < 2 && letter.matches("^[а-яёА-ЯЁ]+$")) {
+            if (!Character.isDigit(letterChar[i]) && enteredLetter.length() < 2 && enteredLetter.matches("^[а-яёА-ЯЁ]+$")) {
                 result = true;
             }
         }
@@ -110,11 +118,11 @@ public class Main_v2 {
         return result;
     }
 
-    private static boolean isEnteredLetterInHiddenWord(String letter, String word) {
+    private static boolean isEnteredLetterInHiddenWord(String enteredLetter, String hiddenWord) {
         boolean result = false;
-        String[] wordArray = word.split("");
+        String[] wordArray = hiddenWord.split("");
         for (int i = 0; i < wordArray.length; i++) {
-            if (Objects.equals(letter, wordArray[i])) {
+            if (Objects.equals(enteredLetter, wordArray[i])) {
                 result = true;
             }
         }
@@ -126,17 +134,17 @@ public class Main_v2 {
         return scanner.next();
     }
 
-    private static String printHiddenWordCells(String word) {
+    private static String printHiddenWordCells(String hiddenWord) {
         StringBuilder cells = new StringBuilder();
-        for (int i = 0; i < word.length(); i++) {
+        for (int i = 0; i < hiddenWord.length(); i++) {
             cells.append('*');
         }
         return cells.toString();
     }
 
-    private static String letHiddenWord(String[] wordsArray) {
-        int i = random.nextInt(wordsArray.length);
-        return wordsArray[i];
+    private static String letHiddenWord(String[] words) {
+        int i = random.nextInt(words.length);
+        return words[i];
     }
 
 }
