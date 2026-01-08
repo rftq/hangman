@@ -27,7 +27,7 @@ public class Main {
         }
     }
 
-    public static void gameLoop() {
+    private static void gameLoop() {
         String hiddenWord = letHiddenWord(words);
         String hiddenWordCells = printHiddenWordCells(hiddenWord);
         System.out.println(hiddenWordCells);
@@ -45,7 +45,7 @@ public class Main {
                     System.out.println("Вы отгадали слово");
                 }
                 if (isGameOver(hiddenWord)) {
-                    System.out.println("Вы проиграли, загаданное слово было: " + hiddenWord);
+                    System.out.println("Вы проиграли, загаданное было: " + hiddenWord);
                 }
             } else System.out.println("Некорректный ввод");
         }
