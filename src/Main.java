@@ -45,7 +45,7 @@ public class Main {
                     System.out.println("Вы отгадали слово");
                 }
                 if (isGameOver(hiddenWord)) {
-                    System.out.println("Вы проиграли, загаданное было: " + hiddenWord);
+                    System.out.println("Вы проиграли, загаданное слово: " + hiddenWord);
                 }
             } else System.out.println("Некорректный ввод");
         }
